@@ -4,32 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Recipe Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 2em; background: #f9f9f9; }
-        .container { max-width: 500px; margin: auto; background: #fff; padding: 2em; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-        h2 { text-align: center; }
-        #cart { margin-top: 2em; }
-        ul { list-style: none; padding: 0; }
-        li { background: #e0ffe0; margin: 0.5em 0; padding: 0.5em; border-radius: 5px; }
-        button { background: #007bff; color: #fff; border: none; padding: 0.5em 1em; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #0056b3; }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 420px;
+            margin: 4em auto;
+            background: #fff;
+            padding: 2.5em 2em 2em 2em;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60, 72, 101, 0.18);
+        }
+        h2 {
+            text-align: center;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 1.2em;
+        }
+        .input-row {
+            display: flex;
+            gap: 0.5em;
+            margin-bottom: 1.5em;
+        }
+        #recipeInput {
+            flex: 1;
+            padding: 0.7em 1em;
+            border: 1.5px solid #a5b4fc;
+            border-radius: 7px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        #recipeInput:focus {
+            border-color: #6366f1;
+        }
+        #addBtn {
+            background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
+            color: #fff;
+            border: none;
+            padding: 0.7em 1.3em;
+            border-radius: 7px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.12);
+            transition: background 0.18s;
+        }
+        #addBtn:hover {
+            background: linear-gradient(90deg, #4338ca 0%, #2563eb 100%);
+        }
+        #cart {
+            margin-top: 2em;
+        }
+        #cart h3 {
+            color: #6366f1;
+            font-weight: 600;
+            margin-bottom: 0.7em;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #f1f5f9;
+            color: #22223b;
+            margin: 0.4em 0;
+            padding: 0.7em 1em;
+            border-radius: 6px;
+            font-size: 1em;
+            box-shadow: 0 1px 4px #e0e7ff;
+            display: flex;
+            align-items: center;
+            gap: 0.6em;
+        }
+        .empty-cart {
+            color: #a1a1aa;
+            font-style: italic;
+            text-align: center;
+            margin-top: 1.6em;
+        }
+        .loader {
+            border: 3px solid #e0e7ff;
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            animation: spin 1s linear infinite;
+            margin: 1em auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>AI Recipe Cart</h2>
-        <input type="text" id="recipeInput" placeholder="What do you want to cook? e.g. paneer curry" style="width:80%;padding:0.5em;">
-        <button onclick="getIngredients()">Add to Cart</button>
-
+        <div class="input-row">
+            <input type="text" id="recipeInput" placeholder="What do you want to cook? e.g. paneer curry">
+            <button id="addBtn" onclick="getIngredients()">Add to Cart</button>
+        </div>
+        <div class="loader" id="loader"></div>
         <div id="cart">
             <h3>Your Cart</h3>
             <ul id="cartList"></ul>
+            <div class="empty-cart" id="emptyCart">No ingredients yet. Add a recipe!</div>
         </div>
     </div>
     <script>
+        function setLoading(loading) {
+            document.getElementById('loader').style.display = loading ? 'block' : 'none';
+            document.getElementById('addBtn').disabled = loading;
+        }
+
         function getIngredients() {
-            const userInput = document.getElementById('recipeInput').value;
+            const userInput = document.getElementById('recipeInput').value.trim();
             if (!userInput) return;
+            setLoading(true);
             fetch('/get_ingredients', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -37,15 +135,25 @@
             })
             .then(res => res.json())
             .then(data => {
+                setLoading(false);
                 const cartList = document.getElementById('cartList');
+                const emptyCart = document.getElementById('emptyCart');
                 cartList.innerHTML = '';
-                data.ingredients.forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = item;
-                    cartList.appendChild(li);
-                });
+                if (data.ingredients.length === 0) {
+                    emptyCart.style.display = 'block';
+                } else {
+                    emptyCart.style.display = 'none';
+                    data.ingredients.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        cartList.appendChild(li);
+                    });
+                }
             })
-            .catch(() => alert('Failed to fetch ingredients.'));
+            .catch(() => {
+                setLoading(false);
+                alert('Failed to fetch ingredients.');
+            });
         }
     </script>
 </body>
