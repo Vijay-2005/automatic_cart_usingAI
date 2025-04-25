@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Recipe Cart</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; background: #f9f9f9; }
+        .container { max-width: 500px; margin: auto; background: #fff; padding: 2em; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+        h2 { text-align: center; }
+        #cart { margin-top: 2em; }
+        ul { list-style: none; padding: 0; }
+        li { background: #e0ffe0; margin: 0.5em 0; padding: 0.5em; border-radius: 5px; }
+        button { background: #007bff; color: #fff; border: none; padding: 0.5em 1em; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>AI Recipe Cart</h2>
+        <input type="text" id="recipeInput" placeholder="What do you want to cook? e.g. paneer curry" style="width:80%;padding:0.5em;">
+        <button onclick="getIngredients()">Add to Cart</button>
+
+        <div id="cart">
+            <h3>Your Cart</h3>
+            <ul id="cartList"></ul>
+        </div>
+    </div>
+    <script>
+        function getIngredients() {
+            const userInput = document.getElementById('recipeInput').value;
+            if (!userInput) return;
+            fetch('/get_ingredients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_input: userInput })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const cartList = document.getElementById('cartList');
+                cartList.innerHTML = '';
+                data.ingredients.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    cartList.appendChild(li);
+                });
+            })
+            .catch(() => alert('Failed to fetch ingredients.'));
+        }
+    </script>
+</body>
+</html>
