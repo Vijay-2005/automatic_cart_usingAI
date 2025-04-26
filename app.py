@@ -22,7 +22,8 @@ def get_ingredients():
     ingredients = [item.strip() for item in response.text.split(',') if item.strip()]
     return jsonify({'ingredients': ingredients})
 
-
+# Remove the app.run() code for production deployment
 if __name__ == '__main__':
+    # This section will only run when testing locally
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
