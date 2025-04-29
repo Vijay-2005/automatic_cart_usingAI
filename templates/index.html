@@ -4,118 +4,293 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Recipe Cart</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', Arial, sans-serif;
             margin: 0;
             background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
             min-height: 100vh;
+            color: #1e293b;
         }
         .container {
-            max-width: 420px;
-            margin: 4em auto;
+            max-width: 480px;
+            margin: 3em auto;
             background: #fff;
             padding: 2.5em 2em 2em 2em;
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(60, 72, 101, 0.18);
+            box-shadow: 0 10px 40px rgba(60, 72, 101, 0.15);
+        }
+        .app-header {
+            text-align: center;
+            margin-bottom: 2em;
         }
         h2 {
-            text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             color: #4f46e5;
-            margin-bottom: 1.2em;
+            margin-bottom: 0.5em;
+            font-size: 1.8em;
+        }
+        .app-tagline {
+            color: #64748b;
+            margin-top: 0;
+            font-size: 0.95em;
         }
         .input-row {
             display: flex;
             gap: 0.5em;
             margin-bottom: 1.5em;
+            position: relative;
         }
         #recipeInput {
             flex: 1;
-            padding: 0.7em 1em;
-            border: 1.5px solid #a5b4fc;
-            border-radius: 7px;
+            padding: 0.9em 1em 0.9em 2.8em;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
             font-size: 1em;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            background-color: #f8fafc;
         }
         #recipeInput:focus {
             border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background-color: #fff;
+        }
+        .input-icon {
+            position: absolute;
+            left: 0.9em;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
         }
         #addBtn {
-            background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
+            background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%);
             color: #fff;
             border: none;
-            padding: 0.7em 1.3em;
-            border-radius: 7px;
+            padding: 0 1.4em;
+            border-radius: 10px;
             font-size: 1em;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.12);
-            transition: background 0.18s;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
         }
         #addBtn:hover {
-            background: linear-gradient(90deg, #4338ca 0%, #2563eb 100%);
+            background: linear-gradient(90deg, #4338ca 0%, #3730a3 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.25);
+        }
+        #addBtn:active {
+            transform: translateY(0);
         }
         #cart {
             margin-top: 2em;
         }
+        .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1em;
+            padding-bottom: 0.8em;
+            border-bottom: 1px solid #e2e8f0;
+        }
         #cart h3 {
-            color: #6366f1;
+            color: #1e293b;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .cart-count {
+            display: inline-block;
+            background: #4f46e5;
+            color: white;
+            font-size: 0.8em;
             font-weight: 600;
-            margin-bottom: 0.7em;
+            padding: 0.2em 0.6em;
+            border-radius: 12px;
+            min-width: 1.2em;
+            text-align: center;
+        }
+        .clear-cart {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.85em;
+            cursor: pointer;
+            padding: 0.4em 0.8em;
+            border-radius: 6px;
+            transition: all 0.15s;
+            display: none;
+        }
+        .clear-cart:hover {
+            color: #ef4444;
+            background: #fee2e2;
         }
         ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
         li {
-            background: #f1f5f9;
-            color: #22223b;
-            margin: 0.4em 0;
-            padding: 0.7em 1em;
-            border-radius: 6px;
+            background: #f8fafc;
+            color: #334155;
+            margin: 0.7em 0;
+            padding: 1em;
+            border-radius: 10px;
             font-size: 1em;
-            box-shadow: 0 1px 4px #e0e7ff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
-            gap: 0.6em;
+            gap: 0.8em;
+            transition: all 0.2s;
+            position: relative;
+        }
+        li:hover {
+            background: #f1f5f9;
+            transform: translateX(2px);
+        }
+        .ingredient-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #e0e7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .ingredient-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .ingredient-img i {
+            color: #6366f1;
+            font-size: 1.2em;
+        }
+        .ingredient-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .remove-item {
+            color: #cbd5e1;
+            background: none;
+            border: none;
+            font-size: 0.85em;
+            cursor: pointer;
+            padding: 0.4em;
+            border-radius: 50%;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-item:hover {
+            color: #ef4444;
+            background: #fee2e2;
         }
         .empty-cart {
-            color: #a1a1aa;
+            color: #94a3b8;
             font-style: italic;
             text-align: center;
-            margin-top: 1.6em;
+            margin-top: 2em;
+            padding: 2em 1em;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8em;
+        }
+        .empty-cart i {
+            font-size: 2em;
+            color: #cbd5e1;
         }
         .loader {
             border: 3px solid #e0e7ff;
             border-top: 3px solid #6366f1;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             animation: spin 1s linear infinite;
-            margin: 1em auto;
+            margin: 1.5em auto;
             display: none;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .recipe-preview {
+            margin-top: 1.5em;
+            padding: 1.2em;
+            background: #f1f5f9;
+            border-radius: 10px;
+            display: none;
+        }
+        .recipe-preview h4 {
+            margin-top: 0;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .recipe-preview h4 i {
+            color: #6366f1;
+        }
+        .recipe-preview p {
+            margin-bottom: 0;
+            color: #64748b;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>AI Recipe Cart</h2>
-        <div class="input-row">
-            <input type="text" id="recipeInput" placeholder="What do you want to cook? e.g. paneer curry">
-            <button id="addBtn" onclick="getIngredients()">Add to Cart</button>
+        <div class="app-header">
+            <h2>AI Recipe Cart</h2>
+            <p class="app-tagline">Enter any dish and get all ingredients automatically</p>
         </div>
+        
+        <div class="input-row">
+            <i class="fa-solid fa-utensils input-icon"></i>
+            <input type="text" id="recipeInput" placeholder="What do you want to cook? e.g. paneer curry">
+            <button id="addBtn" onclick="getIngredients()">
+                <i class="fa-solid fa-cart-plus"></i>
+                <span>Add</span>
+            </button>
+        </div>
+        
         <div class="loader" id="loader"></div>
+        
+        <div id="recipe-preview" class="recipe-preview">
+            <h4><i class="fa-solid fa-book-open"></i> Recipe Preview</h4>
+            <p id="recipe-description">Delicious homemade dish with fresh ingredients.</p>
+        </div>
+        
         <div id="cart">
-            <h3>Your Cart</h3>
+            <div class="cart-header">
+                <h3>
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    Your Cart <span class="cart-count" id="cartCount">0</span>
+                </h3>
+                <button class="clear-cart" id="clearCart">
+                    <i class="fa-solid fa-trash-can"></i> Clear all
+                </button>
+            </div>
             <ul id="cartList"></ul>
-            <div class="empty-cart" id="emptyCart">No ingredients yet. Add a recipe!</div>
+            <div class="empty-cart" id="emptyCart">
+                <i class="fa-solid fa-cart-arrow-down"></i>
+                No ingredients yet. Add a recipe!
+            </div>
         </div>
     </div>
     <script>
@@ -124,10 +299,36 @@
             document.getElementById('addBtn').disabled = loading;
         }
 
+        // Clear cart functionality
+        document.getElementById('clearCart').addEventListener('click', function() {
+            const cartList = document.getElementById('cartList');
+            cartList.innerHTML = '';
+            document.getElementById('emptyCart').style.display = 'block';
+            document.getElementById('cartCount').textContent = '0';
+            this.style.display = 'none';
+            document.getElementById('recipe-preview').style.display = 'none';
+        });
+
+        // Function to get ingredient image URL
+        function getIngredientImageUrl(ingredient) {
+            // Sanitize ingredient name for URL
+            const sanitized = encodeURIComponent(ingredient.toLowerCase().trim());
+            // Use a food image API - Unsplash food category for demo purposes
+            return `https://source.unsplash.com/100x100/?${sanitized},food`;
+        }
+
         function getIngredients() {
             const userInput = document.getElementById('recipeInput').value.trim();
             if (!userInput) return;
+            
             setLoading(true);
+            
+            // Display recipe preview while loading
+            const recipePreview = document.getElementById('recipe-preview');
+            recipePreview.style.display = 'block';
+            document.getElementById('recipe-description').textContent = 
+                `Getting ingredients for ${userInput}...`;
+            
             fetch('/get_ingredients', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -138,23 +339,92 @@
                 setLoading(false);
                 const cartList = document.getElementById('cartList');
                 const emptyCart = document.getElementById('emptyCart');
-                cartList.innerHTML = '';
+                const clearCart = document.getElementById('clearCart');
+                
+                // Update recipe preview
+                document.getElementById('recipe-description').textContent = 
+                    `${userInput} requires the following ingredients:`;
+                
                 if (data.ingredients.length === 0) {
                     emptyCart.style.display = 'block';
+                    clearCart.style.display = 'none';
+                    document.getElementById('cartCount').textContent = '0';
                 } else {
                     emptyCart.style.display = 'none';
+                    clearCart.style.display = 'inline-block';
+                    
+                    // Clear previous ingredients
+                    cartList.innerHTML = '';
+                    
+                    // Add new ingredients with images
                     data.ingredients.forEach(item => {
                         const li = document.createElement('li');
-                        li.textContent = item;
+                        
+                        // Create image container
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'ingredient-img';
+                        
+                        // Try to get ingredient image
+                        const img = document.createElement('img');
+                        img.src = getIngredientImageUrl(item);
+                        img.onerror = function() {
+                            // If image fails to load, show icon instead
+                            img.style.display = 'none';
+                            const icon = document.createElement('i');
+                            icon.className = 'fa-solid fa-carrot';
+                            imgContainer.appendChild(icon);
+                        };
+                        imgContainer.appendChild(img);
+                        
+                        // Create text element
+                        const textSpan = document.createElement('span');
+                        textSpan.className = 'ingredient-name';
+                        textSpan.textContent = item;
+                        
+                        // Create remove button
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'remove-item';
+                        removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                        removeBtn.onclick = function() {
+                            li.remove();
+                            updateCartCount();
+                            if (cartList.children.length === 0) {
+                                emptyCart.style.display = 'block';
+                                clearCart.style.display = 'none';
+                            }
+                        };
+                        
+                        // Add elements to list item
+                        li.appendChild(imgContainer);
+                        li.appendChild(textSpan);
+                        li.appendChild(removeBtn);
+                        
+                        // Add to cart
                         cartList.appendChild(li);
                     });
+                    
+                    // Update cart count
+                    updateCartCount();
                 }
             })
             .catch(() => {
                 setLoading(false);
+                document.getElementById('recipe-preview').style.display = 'none';
                 alert('Failed to fetch ingredients.');
             });
         }
+        
+        function updateCartCount() {
+            const count = document.getElementById('cartList').children.length;
+            document.getElementById('cartCount').textContent = count;
+        }
+        
+        // Add enter key support for search
+        document.getElementById('recipeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getIngredients();
+            }
+        });
     </script>
 </body>
 </html>
