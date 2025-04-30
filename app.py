@@ -4,14 +4,21 @@ import google.generativeai as genai
 from flask_cors import CORS  # Import CORS
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables from .env file (for local development)
+# This won't affect production where environment variables are set differently
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Configure Gemini API key from environment variables
+# This will work both locally (from .env) and in production (from Vercel env vars)
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+
+# Add validation to ensure API key is available
+if not GEMINI_API_KEY:
+    print("WARNING: GEMINI_API_KEY environment variable is not set!")
+
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.0-flash")
 
