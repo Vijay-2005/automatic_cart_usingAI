@@ -1,3 +1,4 @@
 Flask
 google-generativeai
 flask-cors
+python-dotenv
